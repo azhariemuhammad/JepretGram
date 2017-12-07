@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
-import firebase from 'firebase'
 
 const http = axios.create({
   baseURL: 'http://localhost:3000'
@@ -9,19 +8,26 @@ const http = axios.create({
 
 Vue.use(Vuex)
 const state = {
-
+  photos: []
 }
 
 const mutations = {
-  saveUser:
+  saveUser: function (state, payload) {
+    localStorage.setItem('email', payload.email)
+    localStorage.setItem('id', payload.id)
+    localStorage.setItem('username', payload.username)
+  },
+  setPhotos: function (state, payload) {
+    state.photos = payload
+  }
 }
 
 const actions = {
-  signup({ commit }, dataUser) {
-  http.post('/api/users', {
-    username: dataUser.username,
-    email: dataUser.email
-  })
+  signup ({ commit }, dataUser) {
+    http.post('/api/users', {
+      username: dataUser.username,
+      email: dataUser.email
+    })
     .then(({ data }) => {
       let obj = {}
       obj.username = data.user.username
@@ -31,4 +37,20 @@ const actions = {
     })
     .catch(err => console.error(err))
   },
+  getAllPhotos ({ commit }, photos) {
+    http.get('/api/photos')
+    .then(({ data }) => {
+      console.log('get all photos', data)
+      commit('setPhotos', data)
+    })
+    .catch(err => console.log(err))
+  }
 }
+
+const store = new Vuex.Store({
+  state,
+  actions,
+  mutations
+})
+
+export default store

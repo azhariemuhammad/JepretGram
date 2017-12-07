@@ -60,6 +60,13 @@ const findByIdAndRemove = (req, res) => {
     })
 }
 
+const store = new Vuex.Store({
+  getters,
+  state,
+  actions,
+  mutations
+})
+
 
 module.exports = {
   createUser,
