@@ -30,7 +30,7 @@ const getAll = (req, res) => {
 const update = (req, res) => {
   Photo.findByIdAndUpdate({_id: req.params.id}, {
     userId: req.body.userId,
-    url: req.body.url,
+    url: req.file.cloudStoragePublicUrl,
     photo: req.body.photo,
     caption: req.body.caption
   }, {new : true})

@@ -44,6 +44,16 @@ const actions = {
       commit('setPhotos', data)
     })
     .catch(err => console.log(err))
+  },
+  upload ({ commit }, photos) {
+    http.post('/api/photos', {
+      url: photos.url,
+      caption: photos.caption
+    })
+    .then(({ data }) => {
+      console.log('upload')
+    })
+    .catch(err => console.log(err))
   }
 }
 
