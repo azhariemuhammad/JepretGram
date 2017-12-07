@@ -4,7 +4,8 @@ const Photo = require('../models/photo-schema')
 const create = (req, res) => {
   Photo.create({
     // userId: req.body.userId,
-    photo: req.body.url
+    photo: req.body.url,
+    caption: req.body.caption
   })
   .then(data => {
     console.log('data di create', data)
@@ -30,7 +31,8 @@ const update = (req, res) => {
   Photo.findByIdAndUpdate({_id: req.params.id}, {
     userId: req.body.userId,
     url: req.body.url,
-    photo: req.body.photo
+    photo: req.body.photo,
+    caption: req.body.caption
   }, {new : true})
   .then(data => {
     console.log(data)

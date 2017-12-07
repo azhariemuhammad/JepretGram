@@ -5,13 +5,13 @@
     <Navbar/>
       <div class="row">
       <div class="col">
-        1 of 3
+        <button></button>
+        <upload/>
       </div>
       <div class="col-6">
         <Content/>
       </div>
       <div class="col">
-        3 of 3
       </div>
     </div>
   </div>
@@ -22,9 +22,10 @@
 <script>
 import Navbar from '@/components/TheNavBar'
 import Content from '@/components/Content'
+import Upload from '@/components/UploadPhotos'
 export default {
   name: 'Homepage',
-  components: {Navbar, Content}
+  components: {Navbar, Content, Upload}
 }
 </script>
 

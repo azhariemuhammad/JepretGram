@@ -3,11 +3,13 @@ const app = express()
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const mongoose = require('mongoose')
+const cors = require('cors')
 
 app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
 app.use(morgan('dev'))
+app.use(cors())
 
 app.get('/', function(req, res){
 res.send('hello world')

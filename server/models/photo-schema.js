@@ -7,6 +7,7 @@ const photoSchema = new Schema({
     ref: 'User'
   },
   photo: String,
+  caption: String,
   votes: [{
     type: Schema.Types.ObjectId,
     ref: 'User'
