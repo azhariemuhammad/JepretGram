@@ -13,6 +13,7 @@ const state = {
 
 const mutations = {
   saveUser: function (state, payload) {
+    console.log(payload)
     localStorage.setItem('email', payload.email)
     localStorage.setItem('id', payload.id)
     localStorage.setItem('username', payload.username)
@@ -23,19 +24,25 @@ const mutations = {
 }
 
 const actions = {
-  signup ({ commit }, dataUser) {
+  signUp ({ commit }, dataUser) {
+    console.log('masuk signUp', dataUser)
     http.post('/api/users', {
       username: dataUser.username,
       email: dataUser.email
     })
     .then(({ data }) => {
-      let obj = {}
-      obj.username = data.user.username
-      obj.id = data.user._id
-      obj.email = data.user.email
-      commit('saveUser', obj)
+      console.log(data)
     })
     .catch(err => console.error(err))
+  },
+  logIn ({ commit }, payload) {
+    console.log('dat', payload)
+    http.get(`api/users/${payload.email}`)
+    .then(({ data }) => {
+      console.log('datauser login', data[0])
+      commit('saveUser', data[0])
+    })
+    .catch(err => console.log(err))
   },
   getAllPhotos ({ commit }, photos) {
     http.get('/api/photos')

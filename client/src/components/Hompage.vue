@@ -1,31 +1,25 @@
 <template>
 <div>
-  <div container>
-    <h1>Halaman Hompage</h1>
-    <Navbar/>
-      <div class="row">
-      <div class="col">
-        <button></button>
-        <upload/>
-      </div>
-      <div class="col-6">
-        <Content/>
-      </div>
-      <div class="col">
-      </div>
+  <div class="md-layout">
+    <div class="md-layout-item">
+
     </div>
+    <div class="md-layout-item">
+      <span class="md-display-1">Jepret Gram</span>
+      <Content/>
+    </div>
+    <div class="md-layout-item"></div>
   </div>
 </div>
-  
 </template>
 
 <script>
-import Navbar from '@/components/TheNavBar'
+// import Navbar from '@/components/TheNavBar'
 import Content from '@/components/Content'
 import Upload from '@/components/UploadPhotos'
 export default {
   name: 'Homepage',
-  components: {Navbar, Content, Upload}
+  components: {Content, Upload}
 }
 </script>
 

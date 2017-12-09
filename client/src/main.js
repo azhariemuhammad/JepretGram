@@ -9,6 +9,7 @@ Vue.config.productionTip = false
 /* eslint-disable */
 /* eslint-disable no-new */
 // Initialize Firebase
+let app;
 var config = {
   apiKey: "AIzaSyA6tkCsALPbiLlw038YHJ0izByVMcNgwU8",
   authDomain: "vue-project-1a9b9.firebaseapp.com",
@@ -18,12 +19,14 @@ var config = {
   messagingSenderId: "889735417412"
 };
 firebase.initializeApp(config)
-
-
-new Vue({
-  el: '#app',
-  router,
-  store,
-  template: '<App/>',
-  components: { App }
+firebase.auth().onAuthStateChanged(function(user) {
+  if (!app) {
+    app = new Vue({
+      el: '#app',
+      router,
+      store,
+      template: '<App/>',
+      components: { App }
+    })
+  }
 })

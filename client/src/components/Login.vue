@@ -1,23 +1,40 @@
 <template>
   <div>
     <h3>Sign In</h3>
-    <input type="text" placeholder="Username">
-    <input type="text" placeholder="Email">
-    <input type="password" placeholder="Password">
+    <input type="text" v-model="formLogin.username" placeholder="Username">
+    <input type="text" v-model="formLogin.email"  placeholder="Email">
+    <input type="password" v-model="formLogin.password"  placeholder="Password">
     <button @click="login">Login</button>
     <p>You don't have an accoutn ? You can <router-link to="/signup">Create one</router-link></p>
   </div>
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+import firebase from 'firebase'
 export default {
   name: 'Login',
   data: function () {
-    return {}
+    return {
+      formLogin: {
+        email: '',
+        password: '',
+        username: ''
+      }
+    }
   },
   methods: {
+    ...mapActions([
+      'logIn'
+    ]),
     login: function () {
-      this.$router.replace('hompage')
+      firebase.auth().signInWithEmailAndPassword(this.formLogin.email, this.formLogin.password)
+      .then((user) => {
+        alert('login')
+        this.logIn(this.formLogin)
+        this.$router.replace('hompage')
+      })
+      .catch(err => alert(err.message))
     }
   }
 }
