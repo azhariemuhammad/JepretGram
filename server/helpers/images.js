@@ -1,21 +1,27 @@
-'use strict'
-const path = require('path');
+"use  strict"
+require("dotenv").config()
+const path = require('path')
+
 const Storage = require('@google-cloud/storage');
-const CLOUD_BUCKET = 'storage-fancy';
+
+const bucketName = 'jepgram'
+
+
 const storage = Storage({
-  projectId: 'My Project',
-  keyFilename: 'keyjson.json'
+  projectId: process.env.GCLOUD_PROJECT,
+  keyFilename: process.env.KEYFILE_PATH
 })
-const bucket = storage.bucket(CLOUD_BUCKET);
-const getPublicUrl = filename => {
-  return `https://storage.googleapis.com/${CLOUD_BUCKET}/${filename}`;
+
+const bucket = storage.bucket(bucketName)
+
+const getPublicUrl = (filename) => {
+  return `https://storage.googleapis.com/${bucketName}/${filename}`
 }
 
 const sendUploadToGCS = (req, res, next) => {
   if (!req.file) {
     return next()
   }
-
   const gcsname = Date.now() + req.file.originalname
   const file = bucket.file(gcsname)
 
@@ -33,19 +39,21 @@ const sendUploadToGCS = (req, res, next) => {
   stream.on('finish', () => {
     req.file.cloudStorageObject = gcsname
     file.makePublic().then(() => {
+      console.log(req.file)
       req.file.cloudStoragePublicUrl = getPublicUrl(gcsname)
       next()
     })
+
   })
 
   stream.end(req.file.buffer)
-}
 
-const Multer = require('multer'),
+}
+const Multer = require("multer"),
   multer = Multer({
     storage: Multer.MemoryStorage,
     limits: {
-      fileSize: 5 * 1024 * 1024
+      fileSize: 10 * 1024 * 1024
     },
     fileFilter: function (req, file, cb) {
       var filetypes = /jpeg|jpg|png/;
@@ -58,10 +66,12 @@ const Multer = require('multer'),
 
       cb("Error: File type not supported");
     }
+    //   dest : "uploads/"
   })
 
+
 module.exports = {
+  multer,
   getPublicUrl,
-  sendUploadToGCS,
-  multer
+  sendUploadToGCS
 }

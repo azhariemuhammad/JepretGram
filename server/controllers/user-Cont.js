@@ -7,14 +7,14 @@ const createUser = (req, res) => {
     username: req.body.username,
     email: req.body.email
   })
-    .then(user => {
-      message = 'Succes Create One Data'
-      res.status(200).send({ user: user, msg: message })
-    })
-    .catch(err => {
-      console.log('err')
-      res.send(err)
-    })
+  .then(user => {
+    message = 'Succes Create One Data'
+    res.status(200).send({ user: user, msg: message })
+  })
+  .catch(err => {
+    console.log('err')
+    res.send(err)
+  })
 }
 
 const getAllUsers = (req, res) => {

@@ -21,6 +21,6 @@ const userSchema = new Schema({
 })
 
 userSchema.plugin(uniqueValidator); // add validation to username
-const User = mongoose.model('User', userSchema)
+const User = mongoose.model('UserJepret', userSchema)
 
 module.exports = User

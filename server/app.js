@@ -17,7 +17,7 @@ res.send('hello world')
 
 
 mongoose.Promise = global.Promise
-mongoose.connect('mongodb://localhost/azharie_jepretGram')
+mongoose.connect('mongodb://wisnu:123@ds159845.mlab.com:59845/mydb_hacktiv8')
   .then(() => console.log('db connection succesfull to azharie_jepretGram'))
 .catch((err) => console.log(err))
 
