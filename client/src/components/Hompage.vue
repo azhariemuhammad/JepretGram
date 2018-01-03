@@ -45,10 +45,9 @@
 <script>
 // import Navbar from '@/components/TheNavBar'
 import PhotoContent from '@/components/PhotoContent'
-import Upload from '@/components/UploadPhotos'
 export default {
   name: 'Homepage',
-  components: {PhotoContent, Upload}
+  components: {PhotoContent}
 }
 </script>
 

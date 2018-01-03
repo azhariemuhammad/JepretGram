@@ -15,32 +15,32 @@ const mutations = {
   saveUser: function (state, payload) {
     console.log(payload)
     localStorage.setItem('email', payload.email)
-    localStorage.setItem('id', payload.id)
+    localStorage.setItem('id', payload._id)
     localStorage.setItem('username', payload.username)
   },
   setPhotos: function (state, payload) {
     state.photos = payload
+  },
+  setNewPhoto: function (state, payload) {
+    console.log(payload)
+    state.photos.forEach((element, index) => {
+      if (element._id === payload._id) {
+        state.photos.splice(index, 1, payload)
+      }
+    })
   }
 }
 
 const actions = {
-  signUp ({ commit }, dataUser) {
+  login ({ commit }, dataUser) {
     console.log('masuk signUp', dataUser)
     http.post('/api/users', {
       username: dataUser.username,
       email: dataUser.email
     })
     .then(({ data }) => {
-      console.log(data)
-    })
-    .catch(err => console.error(err))
-  },
-  logIn ({ commit }, payload) {
-    console.log('dat', payload)
-    http.get(`api/users/${payload.email}`)
-    .then(({ data }) => {
-      console.log('datauser login', data[0])
-      commit('saveUser', data[0])
+      console.log('datauser login', data)
+      commit('saveUser', data.user)
     })
     .catch(err => console.log(err))
   },
@@ -61,6 +61,44 @@ const actions = {
       console.log('upload')
     })
     .catch(err => console.log(err))
+  },
+  comments ({ commit }, payload) {
+    console.log('payload comments: ', payload)
+    http.put(`/api/photos/comments/${payload.photoId}`, {
+      comment: payload.comment,
+      by: payload.postBy
+    })
+    .then(({data}) => {
+      console.log('data comments: ', data)
+      commit('setNewPhoto', data)
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  },
+  votes ({ commit }, payload) {
+    http.put(`/api/photo/vote/${payload.photoId}`, {
+      votes: localStorage.getItem('id')
+    })
+    .then(({data}) => {
+      console.log('data votes: ', data)
+      commit('setNewPhoto', data)
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  },
+  unvotes ({ commit }, payload) {
+    http.put(`/api/photo/unvote/${payload.photoId}`, {
+      unvotes: localStorage.getItem('id')
+    })
+    .then(({data}) => {
+      console.log('data unvote: ', data)
+      commit('setNewPhoto', data)
+    })
+    .catch(err => {
+      console.log(err)
+    })
   }
 }
 

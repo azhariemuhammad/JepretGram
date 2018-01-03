@@ -4,30 +4,30 @@
   <div class="jepretgram-card" v-for="photo in photos">
     <div class="jepretgram-card-header">
       <img src="https://scontent-mia1-2.cdnjepretgram.com/t51.2885-19/11351720_883119395071375_1326111195_a.jpg"class="jepretgram-card-user-image">
-      <a class="jepretgram-card-user-name" href="https://www.jepretgram.com/rogersbase/"> rogersbase </a>
-      <div class="jepretgram-card-time"> 1 sem </div>
+      <a class="jepretgram-card-user-name" href="https://www.jepretgram.com/rogersbase/"> {{ photo.userId.username }} </a>
+      <div class="jepretgram-card-time"> {{ timeline(photo.createdAt) }} </div>
     </div>
 
     <div class="jepretgram-card-image">
-      <img :src= "photo.photo" height=600px; width="100%"/>
+      <img :src= "photo.photo" height=300px; width="100%"/>
     </div>
 
     <div class="jepretgram-card-content">
-      <p class="Likes">640 Likes</p>
+      <p class="Likes">{{ photo.votes.length }} Likes</p>
       <p><a class="jepretgram-card-content-user">
-      {{ photo._id }}</a>
+      {{ photo.userId.username }}</a>
       {{ photo.caption }}
      </p>
-      <p class="comments">Ver los 12 comentarios</p>
-      <br><a class="user-comment" href="https://www.jepretgram.com/chrisobrien64/">chrisobrien64</a> NO WAY! WAY TO GO ROGER MY BOI</br>
-      <br><a class="user-comment" href="https://www.jepretgram.com/artie_mcparty/">artie_mcparty</a> ROGER = BEST NINTENDO FAN.</br>
-      <br><a class="user-comment" href="https://www.jepretgram.com/theealeexj/">theealeexj</a> I JUST TRIED IT OUT TODAY ITS AMAZING</br>
+      <p class="comments" v-for="com in photo.comments">
+      <a class="user-comment" href="https://www.jepretgram.com/chrisobrien64/">{{ com.by }}             </a>{{ com.comment }}
+      <input type="button" id="removecomment" value="x">
+      </p>
     <hr>
     </div>  
 
     <div class="jepretgram-card-footer">
-      <a class="footer-action-icons"href="#"><i class="fa fa-heart-o"></i></a>
-      <input class="comments-input" type="text" placeholder="Añade un comentario..."/>
+      <a class="footer-action-icons" href="#" @click="voting(photo)"><i class="fa fa-heart-o"></i></a>
+      <input class="comments-input" type="text" placeholder="Comment" v-model="comment"  @keyup.enter="submit(photo._id)"/>
       <a class="footer-action-icons"href="#"><i class="fa fa-ellipsis-h"></i></a>
     </div>
 
@@ -38,10 +38,13 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
+import moment from 'moment'
 export default {
   name: 'PhotoContent',
   data () {
-    return {}
+    return {
+      comment: ''
+    }
   },
   computed: {
     ...mapState([
@@ -50,8 +53,42 @@ export default {
   },
   methods: {
     ...mapActions([
-      'getAllPhotos'
-    ])
+      'getAllPhotos',
+      'comments',
+      'votes',
+      'unvotes'
+    ]),
+    timeline: function (time) {
+      return moment(time).startOf('hour').fromNow()
+    },
+    submit: function (id) {
+      let obj = {
+        comment: this.comment,
+        postBy: localStorage.getItem('username'),
+        photoId: id
+      }
+      console.log('hello: ', obj)
+      this.comments(obj)
+      this.comment = ''
+    },
+    removecomment: function () {
+
+    },
+    voting: function (photo) {
+      let index = photo.votes.findIndex(x => {
+        return x === localStorage.getItem('id')
+      })
+      let obj = {
+        photoId: photo._id
+        }
+        console.log(index)
+      if (index == -1) {
+        this.votes(obj)
+      } else {
+        this.unvotes(obj)
+      }
+      
+    }
   },
   created () {
     this.getAllPhotos()
@@ -108,13 +145,14 @@ a{
 
 .jepretgram-card-content{
   padding: 20px;
+  text-align: none;
 }
 
 .Likes{
   font-weight: bold;
 }
 
-.Instagram-card-content-user{
+.jepretgram-card-content-user{
   font-weight: bold;
   color: #262626;
 }
@@ -131,12 +169,26 @@ a{
   color: #003569;
 }
 
-.Instagram-card-footer{
+.jepretgram-card-footer{
   padding: 20px;
   display: flex;
   align-items: center;
 }
 
+#removecomment {
+  background: 0 0;
+  border: none;
+  color: #c7c7c7;
+  cursor: pointer;
+  float: right;
+  font-size: inherit;
+  height: 1.2em;
+  line-height: inherit;
+  margin-left: 10px;
+  overflow: hidden;
+  padding: 0;
+  width: 1em;
+}
 hr{
   border: none;
   border-bottom: 1px solid #ccc;

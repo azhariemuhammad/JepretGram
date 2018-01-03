@@ -1,19 +1,18 @@
 const User = require('../models/user-schema')
+const findOrCreate = require('mongoose-find-or-create')
+
 let message = ''
 
 const createUser = (req, res) => {
-  console.log(req.body)
-  User.create({
-    username: req.body.username,
+  User.findOrCreate({username: req.body.username},{
     email: req.body.email
-  })
-  .then(user => {
-    message = 'Succes Create One Data'
-    res.status(200).send({ user: user, msg: message })
-  })
-  .catch(err => {
-    console.log('err')
-    res.send(err)
+  }, (err, result) => {
+    if (!err) {
+      message = 'Succes Create One Data'
+      res.status(200).send({ user: result, msg: message })
+    } else {
+      res.json(err)
+    }
   })
 }
 

@@ -22,6 +22,7 @@ const create = (req, res) => {
 
 const getAll = (req, res) => {
   Photo.find()
+  .populate('userId')
   .then(data => {
     console.log('data di getall', data)
     res.status(200).send(data)
@@ -59,7 +60,7 @@ const comments = (req, res) => {
 const votes = (req, res) => {
   Photo.findByIdAndUpdate({_id: req.params.id},
   {
-    $set: { votes: req.body.votes }
+    $addToSet: { votes: req.body.votes }
   }, { new: true })
   .then(data => {
     res.status(200).send(data)
@@ -72,8 +73,8 @@ const votes = (req, res) => {
 const unvote = (req, res) => {
   Photo.findByIdAndUpdate({ _id: req.params.id },
     {
-      $pull: { votes: req.body.unvote }
-    })
+      $pull: { votes: req.body.unvotes }
+    }, { new: true })
     .then(data => {
       res.status(200).send(data)
     })
