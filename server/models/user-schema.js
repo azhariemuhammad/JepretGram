@@ -15,7 +15,10 @@ const userSchema = new Schema({
       },
     message: '{VALUE} is not a valid email'},
     required: [true, 'Email required']
-    },
+  },
+  bio: String,
+  following: [],
+  followers: [],
   createdAt: {
     type: Date,
     default: Date.now

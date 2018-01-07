@@ -1,10 +1,11 @@
 <template>
 <div>
-
-  <div class="jepretgram-card" v-for="photo in photos">
+     <div class="jepretgram-card" v-for="(photo, index) in photos">
     <div class="jepretgram-card-header">
-      <img src="https://scontent-mia1-2.cdnjepretgram.com/t51.2885-19/11351720_883119395071375_1326111195_a.jpg"class="jepretgram-card-user-image">
-      <a class="jepretgram-card-user-name" href="https://www.jepretgram.com/rogersbase/"> {{ photo.userId.username }} </a>
+      <img src="https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png"class="jepretgram-card-user-image">
+       <router-link :to="{ name: 'Profile', params: { id: photo.userId._id, profile: photo.userId.username, pemilik: username }}">
+      <a class="jepretgram-card-user-name"> {{ photo.userId.username }} </a> </router-link>
+      
       <div class="jepretgram-card-time"> {{ timeline(photo.createdAt) }} </div>
     </div>
 
@@ -14,13 +15,14 @@
 
     <div class="jepretgram-card-content">
       <p class="Likes">{{ photo.votes.length }} Likes</p>
-      <p><a class="jepretgram-card-content-user">
-      {{ photo.userId.username }}</a>
+      <p> <router-link :to="{ name: 'Profile', params: { id: photo.userId._id, profile: photo.userId.username, pemilik: username  }}"><a class="jepretgram-card-content-user">
+      {{ photo.userId.username }}</a> </router-link>
       {{ photo.caption }}
+      <input v-if="photo.userId.username === username" type="button" id="removecomment" @click="removecom([photo])" value="edit">
      </p>
       <p class="comments" v-for="com in photo.comments">
-      <a class="user-comment" href="https://www.jepretgram.com/chrisobrien64/">{{ com.by }}             </a>{{ com.comment }}
-      <input type="button" id="removecomment" value="x">
+      <router-link class="user-comment" href="https://www.jepretgram.com/chrisobrien64/" v-for="(post, index) in com.by" :key="index" :to="{ name: 'Profile', params: { id: post._id, profile: post.username, pemilik: username }}">{{ post.username }}             </router-link>{{ com.comment }}
+        <input v-for="(post, index) in com.by" v-if="post.username === username" type="button" id="removecomment" @click="removecom([photo, com])" value="x">
       </p>
     <hr>
     </div>  
@@ -30,20 +32,22 @@
       <input class="comments-input" type="text" placeholder="Comment" v-model="comment"  @keyup.enter="submit(photo._id)"/>
       <a class="footer-action-icons"href="#"><i class="fa fa-ellipsis-h"></i></a>
     </div>
-
-  </div>
-
+     </div>
+  <br>
 </div>
 </template>
 
 <script>
 import { mapActions, mapState } from 'vuex'
+import ModalEdit from '@/components/ModalEdit'
 import moment from 'moment'
 export default {
   name: 'PhotoContent',
+  components: { ModalEdit },
   data () {
     return {
-      comment: ''
+      comment: '',
+      username: localStorage.getItem('username')
     }
   },
   computed: {
@@ -55,24 +59,38 @@ export default {
     ...mapActions([
       'getAllPhotos',
       'comments',
+      'removecomments',
       'votes',
       'unvotes'
     ]),
     timeline: function (time) {
-      return moment(time).startOf('hour').fromNow()
+      let timeLine = moment(time).startOf('hour').fromNow()
+      let split = timeLine.split(' ')
+      if (split[1] === 'hours' && split[0] > 24) {
+        timeLine = moment(time).startOf('day').fromNow()
+        return timeLine
+      } else {
+        return timeLine
+      }
     },
     submit: function (id) {
       let obj = {
         comment: this.comment,
-        postBy: localStorage.getItem('username'),
+        postBy: localStorage.getItem('id'),
         photoId: id
       }
       console.log('hello: ', obj)
       this.comments(obj)
       this.comment = ''
     },
-    removecomment: function () {
-
+    removecom: function (params) {
+      let obj = {
+        comment: params[1].comment,
+        postBy: localStorage.getItem('username'),
+        photoId: params[0]._id
+      }
+      console.log('obj remove: ', obj)
+      this.removecomments(obj)
     },
     voting: function (photo) {
       let index = photo.votes.findIndex(x => {
@@ -80,14 +98,12 @@ export default {
       })
       let obj = {
         photoId: photo._id
-        }
-        console.log(index)
-      if (index == -1) {
+      }
+      if (index === -1) {
         this.votes(obj)
       } else {
         this.unvotes(obj)
       }
-      
     }
   },
   created () {
@@ -188,6 +204,7 @@ a{
   overflow: hidden;
   padding: 0;
   width: 1em;
+  padding-right: 24px;
 }
 hr{
   border: none;

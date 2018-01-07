@@ -10,10 +10,13 @@ const photoSchema = new Schema({
   photo: String,
   votes: [{
     type: Schema.Types.ObjectId,
-    ref: 'User'
+    ref: 'UserJepret'
   }],
   comments: [{
-    by: String,
+    by: [{
+      type: Schema.Types.ObjectId,
+      ref: 'UserJepret'
+    }],
     comment: String
   }],
   createdAt: {

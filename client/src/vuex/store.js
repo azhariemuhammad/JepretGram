@@ -8,7 +8,8 @@ const http = axios.create({
 
 Vue.use(Vuex)
 const state = {
-  photos: []
+  photos: [],
+  id: ''
 }
 
 const mutations = {
@@ -17,8 +18,13 @@ const mutations = {
     localStorage.setItem('email', payload.email)
     localStorage.setItem('id', payload._id)
     localStorage.setItem('username', payload.username)
+    state.id = payload._id
+  },
+  remove: function (state) {
+    state.id = ''
   },
   setPhotos: function (state, payload) {
+    payload.reverse()
     state.photos = payload
   },
   setNewPhoto: function (state, payload) {
@@ -32,6 +38,9 @@ const mutations = {
 }
 
 const actions = {
+  removeId ({ commit }) {
+    commit('remove')
+  },
   login ({ commit }, dataUser) {
     console.log('masuk signUp', dataUser)
     http.post('/api/users', {
@@ -44,6 +53,12 @@ const actions = {
     })
     .catch(err => console.log(err))
   },
+  updateUser ({ commit }, payload) {
+    http.put(`/api/users/${payload.id}`)
+    .then(({data}) => {
+      console.log(data)
+    })
+  },
   getAllPhotos ({ commit }, photos) {
     http.get('/api/photos')
     .then(({ data }) => {
@@ -52,15 +67,29 @@ const actions = {
     })
     .catch(err => console.log(err))
   },
-  upload ({ commit }, photos) {
-    http.post('/api/photos', {
-      url: photos.url,
-      caption: photos.caption
+  upload ({ commit }, payload) {
+    console.log(payload)
+    let formData = new FormData()
+    formData.append('file', payload.image)
+    formData.append('caption', payload.caption)
+    formData.append('userId', localStorage.getItem('id'))
+    http.post('/api/photos', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
     })
     .then(({ data }) => {
       console.log('upload')
     })
     .catch(err => console.log(err))
+  },
+  follow ({ commit, state }, foo) {
+    let id = localStorage.getItem('id')
+    http.put(`/api/users/${id}/following?username=${foo}`)
+    .then(({data}) => {
+      console.log(data)
+    })
+    .catch(err => console.error(err))
   },
   comments ({ commit }, payload) {
     console.log('payload comments: ', payload)
@@ -69,6 +98,19 @@ const actions = {
       by: payload.postBy
     })
     .then(({data}) => {
+      console.log('data comments: ', data)
+      commit('setNewPhoto', data)
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  },
+  removecomments ({commit}, payload) {
+    http.put(`/api/photos/removecomments/${payload.photoId}`, {
+      comment: payload.comment,
+      by: payload.postBy
+    })
+    .then(({ data }) => {
       console.log('data comments: ', data)
       commit('setNewPhoto', data)
     })
@@ -105,7 +147,8 @@ const actions = {
 const store = new Vuex.Store({
   state,
   actions,
-  mutations
+  mutations,
+  http
 })
 
 export default store

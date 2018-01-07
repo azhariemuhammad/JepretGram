@@ -23,6 +23,8 @@ const create = (req, res) => {
 const getAll = (req, res) => {
   Photo.find()
   .populate('userId')
+  .populate({ path: 'comments.by', select: 'username' })
+  .populate({ path: 'following', select: 'username' })
   .then(data => {
     console.log('data di getall', data)
     res.status(200).send(data)
@@ -35,7 +37,11 @@ const getAll = (req, res) => {
 
 getPhotosByUserId = (req, res) => {
   Photo.find({userId: req.params.userid})
+  .populate('userId')
+  .populate('userId.followers')
+  .populate({path: 'userId.following', select: 'username'})
   .then(data => {
+    console.log(data, '0i--0-0')
     res.status(200).json(data)
   })
   .catch(err => {
@@ -49,8 +55,38 @@ const comments = (req, res) => {
     $push: { comments: {by: req.body.by, comment: req.body.comment} } 
   }, { new: true })
   .then(data => {
-    console.log(data)
-    res.status(200).send(data)
+    data.populate('userId')
+    data.populate('comments.by')
+    .execPopulate()
+    .then(data => {
+      console.log(data)
+      res.status(200).send(data)
+    })
+    .catch(err => res.json(err))
+    // data.populate('comments.by', function (err, result) {
+    //   if (!err) {
+    //     console.log(data)
+    //     res.status(200).send(data)
+    //   }
+    // })
+  })
+  .catch(err => {
+    console.log(err)
+  })
+}
+
+const removeComments = (req, res) => {
+  Photo.findByIdAndUpdate({_id: req.params.id}, 
+  {
+    $pull: { comments: { by: req.body.by, comment: req.body.comment }}
+  }, {new: true})
+  .then(data => {
+    data.populate('userId', function (err, result) {
+      if (!err) {
+        console.log(data)
+        res.status(200).send(data)
+      }
+    })
   })
   .catch(err => {
     console.log(err)
@@ -63,7 +99,12 @@ const votes = (req, res) => {
     $addToSet: { votes: req.body.votes }
   }, { new: true })
   .then(data => {
-    res.status(200).send(data)
+    data.populate('userId', function (err, result) {
+      if (!err) {
+        console.log(data)
+        res.status(200).send(data)
+      }
+    })
   })
   .catch(err => {
     res.status(500).json(err)
@@ -76,7 +117,12 @@ const unvote = (req, res) => {
       $pull: { votes: req.body.unvotes }
     }, { new: true })
     .then(data => {
-      res.status(200).send(data)
+      data.populate('userId', function (err, result) {
+        if (!err) {
+          console.log(data)
+          res.status(200).send(data)
+        }
+      })
     })
     .catch(err => {
       res.status(500).json(err)
@@ -97,6 +143,7 @@ module.exports = {
   create,
   getAll,
   comments,
+  removeComments,
   remove,
   votes,
   unvote,

@@ -7,9 +7,9 @@ const images = require('../helpers/images')
 
 router.post('/users', userController.createUser)
 
-router.get('/users/:email', userController.findById)
+router.get('/users/:id', userController.findById)
 
-router.put('/users/:id', userController.findByIdAndUpdate)
+router.put('/users/:id/following', userController.follow, userController.followers)
 
 router.get('/users', userController.getAllUsers)
 
@@ -32,6 +32,8 @@ router.get('/photos', photoController.getAll)
 router.get('/photos/user/:userid', photoController.getPhotosByUserId)
 
 router.put('/photos/comments/:id', photoController.comments)
+
+router.put('/photos/removecomments/:id', photoController.removeComments)
 
 router.put('/photo/vote/:id', photoController.votes)
 

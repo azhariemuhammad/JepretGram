@@ -55,9 +55,9 @@ export default {
         this.formLogin.email = user.email
         this.formLogin.username = user.displayName
         console.log('user: ', user.displayName)
-        this.$router.push({path: ''})
+        console.log(this.$router)
         this.login(this.formLogin)
-        
+        this.$router.replace({path: '/', params: {userId: localStorage.getItem('id')}})
       })
       .catch(err => alert(err.message))
     }

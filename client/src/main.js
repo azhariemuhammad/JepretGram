@@ -5,10 +5,12 @@ import App from './App'
 import router from './router'
 import store from './vuex/store'
 import firebase from 'firebase'
+import KeenUI from '../node_modules/keen-ui/dist/keen-ui.css'
 Vue.config.productionTip = false
 /* eslint-disable */
 /* eslint-disable no-new */
 // Initialize Firebase
+Vue.use(KeenUI)
 let app;
 var config = {
   apiKey: "AIzaSyA6tkCsALPbiLlw038YHJ0izByVMcNgwU8",

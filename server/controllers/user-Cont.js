@@ -27,7 +27,7 @@ const getAllUsers = (req, res) => {
 }
 
 const findById = (req, res) => {
-  User.find({ email: req.params.email })
+  User.find({ _id: req.params.id })
     .then(user => {
       res.status(200).send(user)
     })
@@ -36,13 +36,28 @@ const findById = (req, res) => {
     })
 }
 
-const findByIdAndUpdate = (req, res) => {
+const follow = (req, res, next) => {
+  console.log(req.query.username)
   User.findByIdAndUpdate({ _id: req.params.id }, {
-    username: req.body.username,
-    email: req.body.email
-  }, {new: true})
+    $addToSet: { following: req.query.username }
+  }, { new: true })
   .then(user => {
-    res.status(200).send(user)
+    console.log(user, 'opopopopo')
+    req.body.followers = user.username
+    next()
+  })
+  .catch(err => {
+    console.log(err)
+  })
+}
+const followers = (req, res) => {
+  console.log(req.query.username)
+  User.update({ username: req.query.username }, {
+    $addToSet: { followers: req.body.followers }
+  }, { new: true })
+  .then(user => {
+    console.log(user, 'opopopopo')
+    res.json(user)
   })
   .catch(err => {
     console.log(err)
@@ -65,6 +80,7 @@ module.exports = {
   createUser,
   getAllUsers,
   findById,
-  findByIdAndUpdate,
+  follow,
+  followers,
   findByIdAndRemove
 }

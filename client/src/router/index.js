@@ -3,6 +3,8 @@ import Router from 'vue-router'
 import Login from '@/components/Login'
 import Signup from '@/components/SignUp'
 import Hompage from '@/components/Hompage'
+import Upload from '@/components/UploadPhotos'
+import Profile from '@/components/Profile'
 import firebase from 'firebase'
 Vue.use(Router)
 
@@ -32,7 +34,20 @@ let router = new Router({
       }
     },
     {
-      path: '/upl'
+      path: '/upload',
+      name: 'Upload',
+      component: Upload,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/:id',
+      name: 'Profile',
+      component: Profile,
+      meta: {
+        requiresAuth: true
+      }
     }
   ]
 })
