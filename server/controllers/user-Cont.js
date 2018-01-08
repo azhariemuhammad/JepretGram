@@ -64,6 +64,35 @@ const followers = (req, res) => {
   })
 }
 
+const unfollow = (req, res, next) => {
+  console.log(req.query.username)
+  User.findByIdAndUpdate({ _id: req.params.id }, {
+    $pull: { following: req.query.username }
+  }, { new: true })
+  .then(user => {
+    console.log(user, 'opopopopo')
+    req.body.followers = user.username
+    next()
+  })
+  .catch(err => {
+    console.log(err)
+  })
+}
+const removeFollowers = (req, res) => {
+  console.log(req.query.username)
+  User.update({ username: req.query.username }, {
+    $pull: { followers: req.body.followers }
+  }, { new: true })
+  .then(user => {
+    console.log(user, 'opopopopo')
+    res.json(user)
+  })
+  .catch(err => {
+    console.log(err)
+  })
+}
+
+
 const findByIdAndRemove = (req, res) => {
   User.findByIdAndRemove({ _id: req.params.id })
     .then(user => {
@@ -82,5 +111,7 @@ module.exports = {
   findById,
   follow,
   followers,
+  unfollow,
+  removeFollowers,
   findByIdAndRemove
 }

@@ -2,7 +2,7 @@
 <div>
      <div class="jepretgram-card" v-for="(photo, index) in photos">
     <div class="jepretgram-card-header">
-      <img src="https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png"class="jepretgram-card-user-image">
+      <img src="http://dsi-vd.github.io/patternlab-vd/images/fpo_avatar.png"class="jepretgram-card-user-image">
        <router-link :to="{ name: 'Profile', params: { id: photo.userId._id, profile: photo.userId.username, pemilik: username }}">
       <a class="jepretgram-card-user-name"> {{ photo.userId.username }} </a> </router-link>
       

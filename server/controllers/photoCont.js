@@ -63,12 +63,6 @@ const comments = (req, res) => {
       res.status(200).send(data)
     })
     .catch(err => res.json(err))
-    // data.populate('comments.by', function (err, result) {
-    //   if (!err) {
-    //     console.log(data)
-    //     res.status(200).send(data)
-    //   }
-    // })
   })
   .catch(err => {
     console.log(err)
@@ -81,12 +75,14 @@ const removeComments = (req, res) => {
     $pull: { comments: { by: req.body.by, comment: req.body.comment }}
   }, {new: true})
   .then(data => {
-    data.populate('userId', function (err, result) {
-      if (!err) {
-        console.log(data)
-        res.status(200).send(data)
-      }
+    data.populate('userId')
+    data.populate('comments.by')
+    .execPopulate()
+    .then(data => {
+      console.log(data)
+      res.status(200).send(data)
     })
+    .catch(err => res.json(err))
   })
   .catch(err => {
     console.log(err)
@@ -99,12 +95,14 @@ const votes = (req, res) => {
     $addToSet: { votes: req.body.votes }
   }, { new: true })
   .then(data => {
-    data.populate('userId', function (err, result) {
-      if (!err) {
-        console.log(data)
-        res.status(200).send(data)
-      }
+    data.populate('userId')
+    data.populate('comments.by')
+    .execPopulate()
+    .then(data => {
+      console.log(data)
+      res.status(200).send(data)
     })
+    .catch(err => res.json(err))
   })
   .catch(err => {
     res.status(500).json(err)
@@ -117,12 +115,14 @@ const unvote = (req, res) => {
       $pull: { votes: req.body.unvotes }
     }, { new: true })
     .then(data => {
-      data.populate('userId', function (err, result) {
-        if (!err) {
-          console.log(data)
-          res.status(200).send(data)
-        }
+      data.populate('userId')
+      data.populate('comments.by')
+      .execPopulate()
+      .then(data => {
+        console.log(data)
+        res.status(200).send(data)
       })
+      .catch(err => res.json(err))
     })
     .catch(err => {
       res.status(500).json(err)

@@ -11,6 +11,8 @@ router.get('/users/:id', userController.findById)
 
 router.put('/users/:id/following', userController.follow, userController.followers)
 
+router.put('/users/:id/unfollow', userController.unfollow, userController.removeFollowers)
+
 router.get('/users', userController.getAllUsers)
 
 router.delete('/users/:id', userController.findByIdAndRemove)

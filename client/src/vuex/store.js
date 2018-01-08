@@ -80,12 +80,22 @@ const actions = {
     })
     .then(({ data }) => {
       console.log('upload')
+      commit('setNewPhoto', data)
     })
     .catch(err => console.log(err))
   },
   follow ({ commit, state }, foo) {
     let id = localStorage.getItem('id')
     http.put(`/api/users/${id}/following?username=${foo}`)
+    .then(({data}) => {
+      console.log(data)
+    })
+    .catch(err => console.error(err))
+  },
+  unfollow ({commit}, payload) {
+    let id = localStorage.getItem('id')
+    console.log(payload)
+    http.put(`/api/users/${id}/unfollow?username=${payload}`)
     .then(({data}) => {
       console.log(data)
     })
@@ -103,6 +113,14 @@ const actions = {
     })
     .catch(err => {
       console.log(err)
+    })
+  },
+  remove ({ commit }, payload) {
+    console.log(payload)
+    http.delete(`api/photos/${payload._id}`)
+    .then(({data}) => {
+      console.log('data remove: ', data)
+      commit('setNewPhoto', data)
     })
   },
   removecomments ({commit}, payload) {

@@ -18,7 +18,7 @@
                             <p>{{ bio.following.length }} following</p>
                             <div v-if="pemilik === false">
                                 <div  v-if="flag">
-                                  <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" @click="unfollow">
+                                  <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" @click="unfollow(username)">
                                   following
                                   </button>
                                </div>
@@ -27,7 +27,12 @@
                                  follow
                                 </button>
                                 </div>
-                          </div>  
+                          </div>
+                          <div v-else>
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                                 edit
+                                </button>
+                            </div>  
                         </div>
                     </div>
                 </div>
@@ -38,7 +43,7 @@
             <div class="mdl-cell mdl-cell--2-col"></div>
                 <div class="mdl-cell mdl-cell--8-col">
                     <div class="mdl-grid portfolio-max-width">
-                        <div class="mdl-cell mdl-card mdl-shadow--4dp portfolio-card" v-if="photos" v-for="photo in photos">
+                        <div class="mdl-cell mdl-card mdl-shadow--4dp portfolio-card" v-for="photo in photos">
                             <div class="mdl-card__media">
                                 <img class="article-image" :src="photo.photo" width=100%; height=300px;  border="0" alt="">
                             </div>
@@ -48,6 +53,11 @@
                             <div class="mdl-card__actions mdl-card--border">
                                 <span><p>{{ photo.votes.length }} Likes</p>
                                 <p>{{ photo.comments.length }} comments</p>
+                                <div v-if="pemilik">
+                                  <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" @click="remove(photo)">
+                                 remove
+                                </button>
+                                </div>
                                 </span>
                             </div>
                         </div>
@@ -62,12 +72,12 @@
 
 <script>
 import axios from 'axios'
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 export default {
   name: 'Profile',
   data () {
     return {
-      photos: null,
+      photos: '',
       username: '',
       pemilik: '',
       bio: {
@@ -77,6 +87,11 @@ export default {
       },
       flag: false
     }
+  },
+  computed: {
+    ...mapState([
+      // 'photos'
+    ])
   },
   beforeRouteEnter (to, from, next) {
     let id = to.params.id
@@ -135,7 +150,9 @@ export default {
   },
   methods: {
     ...mapActions([
-      'follow'
+      'follow',
+      'unfollow',
+      'remove'
     ])
   }
 }
@@ -145,7 +162,7 @@ export default {
 .demo-card-image.mdl-card {
   width: 256px;
   height: 100px;
-  background: url('https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png') center / cover;
+  background: url('http://dsi-vd.github.io/patternlab-vd/images/fpo_avatar.png') center / cover;
 
 }
 .demo-card-image > .mdl-card__actions {

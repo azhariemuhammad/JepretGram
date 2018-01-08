@@ -1,18 +1,23 @@
 <template>
   <div>
-      
-
-  
-    <h3>Sign In</h3>
-    <!-- <input type="text" v-model="formLogin.username" placeholder="Username">
-    <input type="text" v-model="formLogin.email"  placeholder="Email">
-    <input type="password" v-model="formLogin.password"  placeholder="Password"> -->
-    <button @click="loginGoogle">Login</button>
-    <button @click="loginFacebook">FbLogin</button>
-    
-
-    <p>You don't have an accoutn ? You can <router-link to="/signup">Create one</router-link></p>
-  
+    <main class="mdl-layout__content">
+      <div class="mdl-grid">
+        <div class="mdl-cell--2-col"></div>
+          <div class="mdl-cell--8-col">
+             <h3>Sign In</h3>
+                 <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" @click="loginGoogle">
+                  Google
+                  </button>
+                  <hr>
+                  <!-- <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--primary" @click="loginFacebook">
+                  Facebook Sign
+                  </button> -->
+                                
+                <p>You don't have an accoutn ? You can create one</p>
+          </div>
+        <div class="mdl-cell--2-col"></div>
+      </div>
+    </main>
   </div>
 </template>
 
@@ -66,22 +71,6 @@ export default {
 </script>
 
 <style scoped>
-  .login {
-    margin-top: 40px;
-  }
-  input {
-    margin: 10px 0;
-    width: 20%;
-    padding: 15px;
-  }
-  button {
-    margin-top: 20px;
-    width: 10%;
-    cursor: pointer;
-  }
-  p {
-    margin-top: 40px;
-    font-size: 13px;
-  }
+  
 
 </style>

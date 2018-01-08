@@ -88,6 +88,7 @@ export default {
       this.upload(this.form)
       this.form.image = null
       this.form.caption = ''
+      this.$router.replace({path: '/', params: {userId: localStorage.getItem('id')}})
     }
   }
 }
